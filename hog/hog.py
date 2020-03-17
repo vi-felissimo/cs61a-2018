@@ -200,22 +200,38 @@ def announce_highest(who, previous_high=0, previous_score=0):
     """
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
-    def say(*order_scores):
-        nonlocal who, previous_high, previous_score
-        whos_score = order_scores[who]
-        # print(who, previous_high, whos_score)
-        turn_gain = whos_score - previous_score
-        if turn_gain > previous_high:
-            if turn_gain == 1:
-                print(turn_gain, 
-                "point! That's the biggest gain yet for Player", who)
-            else:
-                print(turn_gain, 
-                "points! That's the biggest gain yet for Player", who)
-            previous_high = turn_gain
-        # print(who, previous_high, whos_score)
-        return announce_highest(who, previous_high, whos_score)
-    return say 
+    SINGULAR_FORMAT_STR = "{} point! That's the biggest gain yet for Player {}"
+    PLURAL_FORMAT_STR = "{} points! That's the biggest gain yet for Player {}"
+    def curry(*order_scores):
+        # pure eveluation
+        score_for_who = order_scores[who]
+        gain = score_for_who - previous_score
+        if gain > previous_high:
+            print(SINGULAR_FORMAT_STR.format(gain, who) 
+                    if gain == 1 else PLURAL_FORMAT_STR.format(gain, who))
+        # create next capture context function
+        if gain > previous_high:
+            return announce_highest(who, gain, score_for_who)
+        else:
+            return announce_highest(who, previous_high, score_for_who)
+    return curry
+
+    #def say(*order_scores):
+    #    nonlocal who, previous_high, previous_score
+    #    whos_score = order_scores[who]
+    #    # print(who, previous_high, whos_score)
+    #    turn_gain = whos_score - previous_score
+    #    if turn_gain > previous_high:
+    #        if turn_gain == 1:
+    #            print(turn_gain, 
+    #            "point! That's the biggest gain yet for Player", who)
+    #        else:
+    #            print(turn_gain, 
+    #            "points! That's the biggest gain yet for Player", who)
+    #        previous_high = turn_gain
+    #    # print(who, previous_high, whos_score)
+    #    return announce_highest(who, previous_high, whos_score)
+    #return say 
     # END PROBLEM 7
 
 
